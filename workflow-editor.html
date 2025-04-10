@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>工作流编辑器 - STDF数据分析系统</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+    />
+    <style>
+      .workflow-container {
+        background-color: var(--background-light);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+      }
+
+      .workflow-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 20px;
+      }
+
+      .workflow-tab {
+        padding: 10px 20px;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+      }
+
+      .workflow-tab.active {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+      }
+
+      .workflow-canvas {
+        min-height: 500px;
+        background-color: var(--background-gray);
+        border-radius: 8px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .workflow-tools {
+        display: flex;
+        gap: 10px;
+        padding: 15px;
+        background-color: var(--background-light);
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border: 1px solid var(--border-color);
+      }
+
+      .workflow-node {
+        width: 180px;
+        padding: 15px;
+        background-color: var(--background-light);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        position: absolute;
+        cursor: move;
+        box-shadow: var(--shadow);
+      }
+
+      .node-title {
+        font-weight: 500;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .node-icon {
+        color: var(--primary-color);
+      }
+
+      .node-content {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+
+      .node-ports {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+
+      .port {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        cursor: pointer;
+      }
+
+      .node-type-stdf {
+        border-left: 4px solid #34c759;
+      }
+
+      .node-type-analysis {
+        border-left: 4px solid #ff9500;
+      }
+
+      .node-type-export {
+        border-left: 4px solid #ff3b30;
+      }
+
+      .connector {
+        position: absolute;
+        height: 2px;
+        background-color: var(--primary-color);
+        transform-origin: left center;
+        z-index: -1;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 50px;
+      }
+
+      .empty-state-icon {
+        font-size: 48px;
+        color: var(--text-secondary);
+        opacity: 0.5;
+        margin-bottom: 20px;
+      }
+
+      .empty-state-message {
+        font-size: 18px;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+      }
+
+      .workflow-properties {
+        width: 300px;
+        border-left: 1px solid var(--border-color);
+        padding: 20px;
+        background-color: var(--background-light);
+      }
+
+      .properties-heading {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .property-group {
+        margin-bottom: 15px;
+      }
+
+      .property-label {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 5px;
+      }
+
+      .property-input {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+        font-size: 13px;
+      }
+
+      .property-select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+        font-size: 13px;
+      }
+
+      .workflow-sidebar {
+        width: 250px;
+        border-right: 1px solid var(--border-color);
+        padding: 20px;
+        background-color: var(--background-light);
+      }
+
+      .sidebar-heading {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .sidebar-section {
+        margin-bottom: 20px;
+      }
+
+      .sidebar-subheading {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 10px;
+        color: var(--text-secondary);
+      }
+
+      .node-library {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .library-node {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 6px;
+        background-color: var(--background-gray);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .library-node:hover {
+        background-color: var(--primary-light);
+      }
+
+      .library-node-icon {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--background-light);
+        border-radius: 6px;
+        color: var(--primary-color);
+      }
+
+      .library-node-info {
+        flex: 1;
+      }
+
+      .library-node-title {
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .library-node-description {
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+
+      .workflow-layout {
+        display: flex;
+      }
+
+      .workflow-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .smart-assistant {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: var(--background-light);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+      }
+
+      .assistant-heading {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .assistant-icon {
+        color: var(--primary-color);
+      }
+
+      .assistant-suggestions {
+        margin-top: 10px;
+      }
+
+      .suggestion {
+        padding: 10px;
+        background-color: var(--background-gray);
+        border-radius: 6px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .suggestion:hover {
+        background-color: var(--primary-light);
+      }
+
+      .assistant-input {
+        display: flex;
+        margin-top: 15px;
+      }
+
+      .assistant-input input {
+        flex: 1;
+        padding: 10px;
+        border-radius: 6px 0 0 6px;
+        border: 1px solid var(--border-color);
+        border-right: none;
+      }
+
+      .assistant-input button {
+        padding: 10px 15px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 0 6px 6px 0;
+        cursor: pointer;
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- 左侧侧边栏 - 文件浏览器 -->
+      <div class="sidebar file-explorer">
+        <div class="sidebar-header">
+          <h3>文件资源管理器</h3>
+        </div>
+        <div class="nav-actions">
+          <button class="btn-outline">
+            <i class="ri-folder-add-line"></i>
+            新建文件夹
+          </button>
+          <button class="btn-outline">
+            <i class="ri-file-add-line"></i>
+            新建文件
+          </button>
+        </div>
+        <div class="file-list">
+          <div class="file-item">
+            <i class="ri-folder-line"></i>
+            <span>STDF数据</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-line"></i>
+            <span>wafer_001.stdf</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-line"></i>
+            <span>wafer_002.stdf</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-line"></i>
+            <span>wafer_003.stdf</span>
+          </div>
+          <div class="file-item">
+            <i class="ri-folder-line"></i>
+            <span>分析结果</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-excel-line"></i>
+            <span>分析报告.xlsm</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-chart-line"></i>
+            <span>缺陷分析.html</span>
+          </div>
+          <div class="file-item">
+            <i class="ri-folder-line"></i>
+            <span>工作流</span>
+          </div>
+          <div class="file-item file-child active">
+            <i class="ri-flow-chart"></i>
+            <span>晶圆分析流程.flow</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-flow-chart"></i>
+            <span>良率分析流程.flow</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-flow-chart"></i>
+            <span>缺陷检测流程.flow</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主内容区 -->
+      <div class="main-content">
+        <!-- 顶部导航 -->
+        <header class="main-header">
+          <div class="app-title">STDF智能数据分析平台</div>
+          <nav class="main-nav">
+            <a href="workflow-editor.html" class="nav-link active">
+              <i class="ri-flow-chart"></i>
+              工作流编辑器
+            </a>
+            <a href="smart-qa.html" class="nav-link">
+              <i class="ri-question-answer-line"></i>
+              智能问答
+            </a>
+            <a href="custom-agent.html" class="nav-link">
+              <i class="ri-robot-line"></i>
+              自定义Agent
+            </a>
+          </nav>
+          <div class="user-menu">
+            <button class="btn-outline">
+              <i class="ri-user-line"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- 工作流编辑器主体 -->
+        <div class="workflow-editor-container">
+          <div class="workflow-header">
+            <div class="workflow-title-area">
+              <h2 class="workflow-title">晶圆分析流程</h2>
+              <div class="workflow-meta">
+                <span class="workflow-status">
+                  <i class="ri-time-line"></i> 上次运行: 今天 10:23
+                </span>
+                <span class="workflow-version">
+                  <i class="ri-git-branch-line"></i> 版本: 1.2
+                </span>
+              </div>
+            </div>
+            <div class="workflow-actions">
+              <button class="btn-outline">
+                <i class="ri-save-line"></i>
+                保存
+              </button>
+              <button class="btn-outline">
+                <i class="ri-file-copy-line"></i>
+                另存为
+              </button>
+              <button class="btn-primary">
+                <i class="ri-play-line"></i>
+                运行
+              </button>
+            </div>
+          </div>
+
+          <div class="workflow-main">
+            <div class="workflow-tools">
+              <div class="tools-section">
+                <h3 class="section-title">数据源</h3>
+                <div class="tool-items">
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="stdf-input"
+                  >
+                    <i class="ri-file-line"></i>
+                    <span>STDF数据</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="excel-input"
+                  >
+                    <i class="ri-file-excel-line"></i>
+                    <span>Excel数据</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="database-input"
+                  >
+                    <i class="ri-database-2-line"></i>
+                    <span>数据库</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tools-section">
+                <h3 class="section-title">处理器</h3>
+                <div class="tool-items">
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="stdf-converter"
+                  >
+                    <i class="ri-file-transfer-line"></i>
+                    <span>STDF转换器</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="data-filter"
+                  >
+                    <i class="ri-filter-line"></i>
+                    <span>数据过滤器</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="data-aggregator"
+                  >
+                    <i class="ri-bubble-chart-line"></i>
+                    <span>数据聚合器</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="parameter-extractor"
+                  >
+                    <i class="ri-divide-line"></i>
+                    <span>参数提取器</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="defect-analyzer"
+                  >
+                    <i class="ri-error-warning-line"></i>
+                    <span>缺陷分析器</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tools-section">
+                <h3 class="section-title">分析</h3>
+                <div class="tool-items">
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="yield-analyzer"
+                  >
+                    <i class="ri-percent-line"></i>
+                    <span>良率分析</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="trend-analyzer"
+                  >
+                    <i class="ri-line-chart-line"></i>
+                    <span>趋势分析</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="pattern-detector"
+                  >
+                    <i class="ri-spy-line"></i>
+                    <span>模式检测</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="wafer-mapper"
+                  >
+                    <i class="ri-radar-line"></i>
+                    <span>晶圆映射</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tools-section">
+                <h3 class="section-title">输出</h3>
+                <div class="tool-items">
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="excel-output"
+                  >
+                    <i class="ri-file-excel-line"></i>
+                    <span>Excel输出</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="csv-output"
+                  >
+                    <i class="ri-file-list-line"></i>
+                    <span>CSV输出</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="html-report"
+                  >
+                    <i class="ri-file-chart-line"></i>
+                    <span>HTML报告</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="database-output"
+                  >
+                    <i class="ri-database-2-line"></i>
+                    <span>数据库存储</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tools-section">
+                <h3 class="section-title">AI组件</h3>
+                <div class="tool-items">
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="defect-classifier"
+                  >
+                    <i class="ri-cpu-line"></i>
+                    <span>缺陷分类器</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="agent-analyzer"
+                  >
+                    <i class="ri-robot-line"></i>
+                    <span>Agent分析</span>
+                  </div>
+                  <div
+                    class="tool-item"
+                    draggable="true"
+                    data-type="prediction-model"
+                  >
+                    <i class="ri-brain-line"></i>
+                    <span>预测模型</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="workflow-canvas-container">
+              <div class="workflow-canvas">
+                <!-- 连接线 SVG 层 -->
+                <svg class="connections-layer">
+                  <!-- 示例连接线 -->
+                  <path
+                    d="M 210,180 C 250,180 290,240 330,240"
+                    class="connection-path"
+                  ></path>
+                  <path
+                    d="M 450,240 C 490,240 530,170 570,170"
+                    class="connection-path"
+                  ></path>
+                  <path
+                    d="M 450,240 C 490,240 530,310 570,310"
+                    class="connection-path"
+                  ></path>
+                </svg>
+
+                <!-- 工作流节点 -->
+                <div
+                  class="workflow-node"
+                  style="top: 150px; left: 80px"
+                  data-type="stdf-input"
+                >
+                  <div class="node-header">
+                    <i class="ri-file-line"></i>
+                    <span>STDF数据</span>
+                    <div class="node-actions">
+                      <i class="ri-settings-line"></i>
+                      <i class="ri-close-line"></i>
+                    </div>
+                  </div>
+                  <div class="node-body">
+                    <div class="node-param">
+                      <span class="param-name">文件路径:</span>
+                      <span class="param-value">wafer_001.stdf</span>
+                    </div>
+                  </div>
+                  <div class="node-ports">
+                    <div class="output-port" data-port="output"></div>
+                  </div>
+                </div>
+
+                <div
+                  class="workflow-node"
+                  style="top: 210px; left: 330px"
+                  data-type="stdf-converter"
+                >
+                  <div class="node-header">
+                    <i class="ri-file-transfer-line"></i>
+                    <span>STDF转换器</span>
+                    <div class="node-actions">
+                      <i class="ri-settings-line"></i>
+                      <i class="ri-close-line"></i>
+                    </div>
+                  </div>
+                  <div class="node-body">
+                    <div class="node-param">
+                      <span class="param-name">输出格式:</span>
+                      <span class="param-value">XLSM</span>
+                    </div>
+                  </div>
+                  <div class="node-ports">
+                    <div class="input-port" data-port="input"></div>
+                    <div class="output-port" data-port="output"></div>
+                  </div>
+                </div>
+
+                <div
+                  class="workflow-node"
+                  style="top: 140px; left: 570px"
+                  data-type="wafer-mapper"
+                >
+                  <div class="node-header">
+                    <i class="ri-radar-line"></i>
+                    <span>晶圆映射</span>
+                    <div class="node-actions">
+                      <i class="ri-settings-line"></i>
+                      <i class="ri-close-line"></i>
+                    </div>
+                  </div>
+                  <div class="node-body">
+                    <div class="node-param">
+                      <span class="param-name">色彩方案:</span>
+                      <span class="param-value">热力图</span>
+                    </div>
+                  </div>
+                  <div class="node-ports">
+                    <div class="input-port" data-port="input"></div>
+                    <div class="output-port" data-port="output"></div>
+                  </div>
+                </div>
+
+                <div
+                  class="workflow-node"
+                  style="top: 280px; left: 570px"
+                  data-type="yield-analyzer"
+                >
+                  <div class="node-header">
+                    <i class="ri-percent-line"></i>
+                    <span>良率分析</span>
+                    <div class="node-actions">
+                      <i class="ri-settings-line"></i>
+                      <i class="ri-close-line"></i>
+                    </div>
+                  </div>
+                  <div class="node-body">
+                    <div class="node-param">
+                      <span class="param-name">分析类型:</span>
+                      <span class="param-value">按测试项</span>
+                    </div>
+                  </div>
+                  <div class="node-ports">
+                    <div class="input-port" data-port="input"></div>
+                    <div class="output-port" data-port="output"></div>
+                  </div>
+                </div>
+
+                <div
+                  class="workflow-node"
+                  style="top: 210px; left: 800px"
+                  data-type="html-report"
+                >
+                  <div class="node-header">
+                    <i class="ri-file-chart-line"></i>
+                    <span>HTML报告</span>
+                    <div class="node-actions">
+                      <i class="ri-settings-line"></i>
+                      <i class="ri-close-line"></i>
+                    </div>
+                  </div>
+                  <div class="node-body">
+                    <div class="node-param">
+                      <span class="param-name">输出文件:</span>
+                      <span class="param-value">晶圆分析报告.html</span>
+                    </div>
+                  </div>
+                  <div class="node-ports">
+                    <div class="input-port" data-port="input"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="canvas-controls">
+                <button class="btn-icon">
+                  <i class="ri-add-line"></i>
+                </button>
+                <button class="btn-icon">
+                  <i class="ri-subtract-line"></i>
+                </button>
+                <button class="btn-icon">
+                  <i class="ri-drag-move-line"></i>
+                </button>
+                <button class="btn-icon">
+                  <i class="ri-refresh-line"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="workflow-properties">
+              <div class="properties-header">
+                <h3>节点属性</h3>
+                <button class="btn-icon">
+                  <i class="ri-close-line"></i>
+                </button>
+              </div>
+
+              <div class="properties-body">
+                <div class="property-section">
+                  <h4 class="property-title">基本信息</h4>
+                  <div class="property-group">
+                    <label>名称</label>
+                    <input type="text" value="晶圆映射" class="form-input" />
+                  </div>
+                  <div class="property-group">
+                    <label>描述</label>
+                    <textarea class="form-input">
+将测试数据可视化为晶圆图，显示缺陷分布和模式</textarea
+                    >
+                  </div>
+                </div>
+
+                <div class="property-section">
+                  <h4 class="property-title">参数配置</h4>
+                  <div class="property-group">
+                    <label>色彩方案</label>
+                    <select class="form-input">
+                      <option>热力图</option>
+                      <option>红绿</option>
+                      <option>彩虹</option>
+                      <option>自定义</option>
+                    </select>
+                  </div>
+                  <div class="property-group">
+                    <label>展示模式</label>
+                    <select class="form-input">
+                      <option>通过/失败</option>
+                      <option>测试值</option>
+                      <option>偏差值</option>
+                    </select>
+                  </div>
+                  <div class="property-group checkbox-group">
+                    <input type="checkbox" id="prop-show-grid" checked />
+                    <label for="prop-show-grid">显示网格</label>
+                  </div>
+                  <div class="property-group checkbox-group">
+                    <input type="checkbox" id="prop-show-coord" checked />
+                    <label for="prop-show-coord">显示坐标</label>
+                  </div>
+                  <div class="property-group">
+                    <label>透明度</label>
+                    <div class="range-container">
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.1"
+                        value="0.8"
+                        class="form-range"
+                      />
+                      <span class="range-value">0.8</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="property-section">
+                  <h4 class="property-title">高级设置</h4>
+                  <div class="property-group">
+                    <label>缺陷突出显示</label>
+                    <select class="form-input">
+                      <option>自动</option>
+                      <option>手动阈值</option>
+                      <option>标准差</option>
+                    </select>
+                  </div>
+                  <div class="property-group">
+                    <label>阈值</label>
+                    <input type="number" value="2.5" class="form-input" />
+                  </div>
+                  <div class="property-group checkbox-group">
+                    <input type="checkbox" id="prop-enable-animation" />
+                    <label for="prop-enable-animation">启用动画</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="properties-footer">
+                <button class="btn-outline">重置</button>
+                <button class="btn-primary">应用</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧模板库 -->
+      <div class="sidebar tool-market">
+        <div class="sidebar-header">
+          <h3>工作流模板</h3>
+        </div>
+        <div class="tool-list">
+          <div class="workflow-template">
+            <div class="template-header">
+              <i class="ri-flow-chart"></i>
+              <span>基础STDF分析</span>
+            </div>
+            <p class="template-description">
+              一个基础的STDF文件分析工作流，包含数据转换、晶圆映射和报告生成。
+            </p>
+            <button class="btn-outline btn-sm template-action">应用模板</button>
+          </div>
+
+          <div class="workflow-template">
+            <div class="template-header">
+              <i class="ri-flow-chart"></i>
+              <span>良率优化分析</span>
+            </div>
+            <p class="template-description">
+              专注于良率分析和优化的工作流，包含缺陷分类、参数关联性分析和改进建议。
+            </p>
+            <button class="btn-outline btn-sm template-action">应用模板</button>
+          </div>
+
+          <div class="workflow-template">
+            <div class="template-header">
+              <i class="ri-flow-chart"></i>
+              <span>缺陷模式识别</span>
+            </div>
+            <p class="template-description">
+              使用AI分析识别晶圆上的缺陷模式，关联到可能的制程或设计问题。
+            </p>
+            <button class="btn-outline btn-sm template-action">应用模板</button>
+          </div>
+
+          <div class="workflow-template">
+            <div class="template-header">
+              <i class="ri-flow-chart"></i>
+              <span>批次数据比对</span>
+            </div>
+            <p class="template-description">
+              比较多批次STDF数据，分析趋势变化和异常情况，自动生成差异报告。
+            </p>
+            <button class="btn-outline btn-sm template-action">应用模板</button>
+          </div>
+
+          <div class="workflow-template">
+            <div class="template-header">
+              <i class="ri-flow-chart"></i>
+              <span>测试参数优化</span>
+            </div>
+            <p class="template-description">
+              分析测试参数，提供参数优化建议，以提高测试效率和准确性。
+            </p>
+            <button class="btn-outline btn-sm template-action">应用模板</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 简单的交互功能示意
+      document.addEventListener("DOMContentLoaded", function () {
+        // 模拟节点选择功能
+        const nodes = document.querySelectorAll(".workflow-node");
+        nodes.forEach((node) => {
+          node.addEventListener("click", function () {
+            // 移除其他节点的选中状态
+            nodes.forEach((n) => n.classList.remove("selected"));
+            // 将当前节点设为选中
+            this.classList.add("selected");
+
+            // 显示属性面板
+            document
+              .querySelector(".workflow-properties")
+              .classList.add("active");
+
+            // 这里可以添加更新属性面板内容的逻辑
+          });
+        });
+
+        // 属性面板关闭按钮
+        const closePropertiesBtn = document.querySelector(
+          ".properties-header .btn-icon"
+        );
+        closePropertiesBtn.addEventListener("click", function () {
+          document
+            .querySelector(".workflow-properties")
+            .classList.remove("active");
+        });
+
+        // 应用模板按钮
+        const templateButtons = document.querySelectorAll(".template-action");
+        templateButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const template = this.closest(".workflow-template");
+            const templateName = template.querySelector(
+              ".template-header span"
+            ).textContent;
+            alert(`已应用"${templateName}"模板`);
+          });
+        });
+
+        // 画布控制按钮模拟
+        const zoomInBtn = document.querySelector(
+          ".canvas-controls .btn-icon:nth-child(1)"
+        );
+        const zoomOutBtn = document.querySelector(
+          ".canvas-controls .btn-icon:nth-child(2)"
+        );
+
+        zoomInBtn.addEventListener("click", function () {
+          alert("放大画布");
+        });
+
+        zoomOutBtn.addEventListener("click", function () {
+          alert("缩小画布");
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MCP自定义Agent</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- 左侧文件导航栏 -->
+      <div class="sidebar file-explorer">
+        <div class="sidebar-header">
+          <h3>文件区域</h3>
+        </div>
+        <div class="nav-actions">
+          <button class="btn-outline">
+            <i class="fas fa-folder-plus"></i> 新建文件夹
+          </button>
+          <button class="btn-outline">
+            <i class="fas fa-file-plus"></i> 新建文件
+          </button>
+        </div>
+        <div class="file-list">
+          <div class="file-item">
+            <i class="fas fa-folder"></i>
+            <span>STDF文件</span>
+          </div>
+          <div class="file-item">
+            <i class="fas fa-folder"></i>
+            <span>工作流程</span>
+          </div>
+          <div class="file-item active">
+            <i class="fas fa-folder-open"></i>
+            <span>自定义Agent</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="fas fa-robot"></i>
+            <span>晶圆分析专家</span>
+          </div>
+          <div class="file-item file-child selected">
+            <i class="fas fa-robot"></i>
+            <span>良率分析师</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="fas fa-robot"></i>
+            <span>缺陷模式识别</span>
+          </div>
+          <div class="file-item">
+            <i class="fas fa-folder"></i>
+            <span>生成的报告</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主内容区域 -->
+      <div class="main-content">
+        <div class="main-header">
+          <div class="app-title">MCP Agent框架演示</div>
+          <div class="main-nav">
+            <a href="workflow-editor.html" class="nav-link"
+              ><i class="fas fa-project-diagram"></i> 工作流编辑器</a
+            >
+            <a href="smart-qa.html" class="nav-link"
+              ><i class="fas fa-comment-dots"></i> 智能问答</a
+            >
+            <a href="custom-agents.html" class="nav-link active"
+              ><i class="fas fa-robot"></i> 自定义Agent</a
+            >
+          </div>
+        </div>
+
+        <!-- 自定义Agent区域 -->
+        <div class="agent-container">
+          <div class="agent-header">
+            <h2><i class="fas fa-robot"></i> 良率分析师</h2>
+            <div class="agent-actions">
+              <button class="btn-primary">
+                <i class="fas fa-save"></i> 保存配置
+              </button>
+              <button class="btn-outline">
+                <i class="fas fa-clone"></i> 复制Agent
+              </button>
+              <button class="btn-outline danger">
+                <i class="fas fa-trash"></i> 删除
+              </button>
+            </div>
+          </div>
+
+          <div class="agent-config-area">
+            <div class="config-section">
+              <div class="section-header">
+                <h3>基本配置</h3>
+              </div>
+              <div class="section-content">
+                <div class="form-group">
+                  <label>Agent名称</label>
+                  <input type="text" value="良率分析师" class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label>描述</label>
+                  <textarea class="form-control">
+专门用于分析半导体测试数据良率问题的智能助手，可以识别良率问题并提供解决方案建议。</textarea
+                  >
+                </div>
+                <div class="form-group">
+                  <label>图标</label>
+                  <div class="icon-selector">
+                    <div class="selected-icon">
+                      <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="icon-options">
+                      <div class="icon-option selected">
+                        <i class="fas fa-chart-line"></i>
+                      </div>
+                      <div class="icon-option">
+                        <i class="fas fa-microscope"></i>
+                      </div>
+                      <div class="icon-option">
+                        <i class="fas fa-microchip"></i>
+                      </div>
+                      <div class="icon-option">
+                        <i class="fas fa-brain"></i>
+                      </div>
+                      <div class="icon-option">
+                        <i class="fas fa-bug"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>基础模型</label>
+                  <select class="form-control">
+                    <option selected>大型综合模型 (15B)</option>
+                    <option>晶圆测试专家模型 (7B)</option>
+                    <option>通用工程模型 (3B)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="config-section">
+              <div class="section-header">
+                <h3>系统提示词配置</h3>
+                <div class="section-actions">
+                  <button class="btn-sm">
+                    <i class="fas fa-wand-magic-sparkles"></i> 优化提示词
+                  </button>
+                </div>
+              </div>
+              <div class="section-content">
+                <div class="form-group">
+                  <textarea class="form-control prompt-editor" rows="12">
+你是一个专业的半导体良率分析专家，专门负责分析STDF（Standard Test Data Format）文件，找出影响良率的关键因素，并提供专业的改进建议。
+
+主要职责：
+1. 分析STDF文件中的测试数据，识别主要的失效模式
+2. 通过空间分布、参数相关性等方式，找出失效根本原因
+3. 提供针对性的制程改进建议
+4. 对比历史数据，识别趋势变化
+5. 预测可能的良率风险
+
+专业知识范围：
+- 半导体测试基本原理和常见指标
+- 晶圆测试项目的解释与分析方法
+- 常见失效模式及其可能原因
+- 半导体制程基础知识
+- 良率提升的常见方法和最佳实践
+
+回答时，你应该：
+- 使用专业的半导体术语
+- 提供数据支持的分析结果
+- 在可能的情况下提供图表分析
+- 给出具体的、可操作的改进建议
+- 保持客观中立，基于数据得出结论
+
+在分析时，考虑以下维度：
+- 空间分布（Spatial Distribution）：缺陷在晶圆上的分布模式
+- 参数相关性：各测试参数间的关系
+- 环境因素：温度、湿度等对测试结果的影响
+- 时间趋势：批次间的变化和趋势
+- 测试限制：测试设置本身可能造成的问题</textarea
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="config-section">
+              <div class="section-header">
+                <h3>工具授权</h3>
+              </div>
+              <div class="section-content">
+                <div class="tool-permission-list">
+                  <div class="tool-permission-item">
+                    <div class="tool-info">
+                      <div class="tool-icon">
+                        <i class="fas fa-file-import"></i>
+                      </div>
+                      <div class="tool-details">
+                        <div class="tool-name">STDF数据分析器</div>
+                        <div class="tool-description">
+                          解析STDF文件并提取关键统计数据
+                        </div>
+                      </div>
+                    </div>
+                    <div class="permission-toggle">
+                      <input type="checkbox" checked id="tool1" />
+                      <label for="tool1"></label>
+                    </div>
+                  </div>
+
+                  <div class="tool-permission-item">
+                    <div class="tool-info">
+                      <div class="tool-icon">
+                        <i class="fas fa-chart-scatter"></i>
+                      </div>
+                      <div class="tool-details">
+                        <div class="tool-name">晶圆图渲染</div>
+                        <div class="tool-description">
+                          将测试数据可视化为晶圆缺陷图
+                        </div>
+                      </div>
+                    </div>
+                    <div class="permission-toggle">
+                      <input type="checkbox" checked id="tool2" />
+                      <label for="tool2"></label>
+                    </div>
+                  </div>
+
+                  <div class="tool-permission-item">
+                    <div class="tool-info">
+                      <div class="tool-icon">
+                        <i class="fas fa-database"></i>
+                      </div>
+                      <div class="tool-details">
+                        <div class="tool-name">历史数据查询</div>
+                        <div class="tool-description">
+                          访问历史测试数据进行趋势分析
+                        </div>
+                      </div>
+                    </div>
+                    <div class="permission-toggle">
+                      <input type="checkbox" checked id="tool3" />
+                      <label for="tool3"></label>
+                    </div>
+                  </div>
+
+                  <div class="tool-permission-item">
+                    <div class="tool-info">
+                      <div class="tool-icon">
+                        <i class="fas fa-code"></i>
+                      </div>
+                      <div class="tool-details">
+                        <div class="tool-name">Python执行环境</div>
+                        <div class="tool-description">
+                          执行自定义Python脚本进行数据分析
+                        </div>
+                      </div>
+                    </div>
+                    <div class="permission-toggle">
+                      <input type="checkbox" checked id="tool4" />
+                      <label for="tool4"></label>
+                    </div>
+                  </div>
+
+                  <div class="tool-permission-item">
+                    <div class="tool-info">
+                      <div class="tool-icon">
+                        <i class="fas fa-file-export"></i>
+                      </div>
+                      <div class="tool-details">
+                        <div class="tool-name">报告生成器</div>
+                        <div class="tool-description">
+                          生成PDF/HTML格式的分析报告
+                        </div>
+                      </div>
+                    </div>
+                    <div class="permission-toggle">
+                      <input type="checkbox" checked id="tool5" />
+                      <label for="tool5"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧Agent库 -->
+      <div class="sidebar agent-library">
+        <div class="sidebar-header">
+          <h3>Agent库</h3>
+          <button class="btn-sm btn-primary">
+            <i class="fas fa-plus"></i> 新建Agent
+          </button>
+        </div>
+        <div class="agent-search">
+          <input type="text" placeholder="搜索Agent..." class="search-input" />
+        </div>
+        <div class="agent-categories">
+          <div class="category-item active">
+            <span>我的Agent</span>
+            <span class="count">3</span>
+          </div>
+          <div class="category-item">
+            <span>团队共享</span>
+            <span class="count">12</span>
+          </div>
+          <div class="category-item">
+            <span>市场</span>
+            <span class="count">48</span>
+          </div>
+        </div>
+        <div class="agent-list">
+          <div class="agent-item selected">
+            <div class="agent-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="agent-info">
+              <div class="agent-name">良率分析师</div>
+              <div class="agent-meta">
+                <span class="agent-type custom">自定义</span>
+                <span class="agent-date">4月15日更新</span>
+              </div>
+            </div>
+          </div>
+          <div class="agent-item">
+            <div class="agent-icon">
+              <i class="fas fa-microscope"></i>
+            </div>
+            <div class="agent-info">
+              <div class="agent-name">晶圆分析专家</div>
+              <div class="agent-meta">
+                <span class="agent-type custom">自定义</span>
+                <span class="agent-date">4月10日更新</span>
+              </div>
+            </div>
+          </div>
+          <div class="agent-item">
+            <div class="agent-icon">
+              <i class="fas fa-bug"></i>
+            </div>
+            <div class="agent-info">
+              <div class="agent-name">缺陷模式识别</div>
+              <div class="agent-meta">
+                <span class="agent-type custom">自定义</span>
+                <span class="agent-date">4月5日更新</span>
+              </div>
+            </div>
+          </div>
+          <div class="agent-item">
+            <div class="agent-icon">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="agent-info">
+              <div class="agent-name">通用数据分析</div>
+              <div class="agent-meta">
+                <span class="agent-type market">市场</span>
+                <span class="agent-rating">★★★★☆</span>
+              </div>
+            </div>
+          </div>
+          <div class="agent-item">
+            <div class="agent-icon">
+              <i class="fas fa-microchip"></i>
+            </div>
+            <div class="agent-info">
+              <div class="agent-name">晶圆制程助手</div>
+              <div class="agent-meta">
+                <span class="agent-type market">市场</span>
+                <span class="agent-rating">★★★★★</span>
+              </div>
+            </div>
+          </div>
+          <div class="agent-item">
+            <div class="agent-icon">
+              <i class="fas fa-search"></i>
+            </div>
+            <div class="agent-info">
+              <div class="agent-name">参数优化专家</div>
+              <div class="agent-meta">
+                <span class="agent-type team">团队</span>
+                <span class="agent-date">3月28日更新</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

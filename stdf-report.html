@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STDF Wafer Report</title>
+    <link rel="stylesheet" href="stdf-report.css" />
+  </head>
+  <body>
+    <nav class="main-navigation">
+      <div class="nav-container">
+        <div class="nav-logo">STDF Analyzer</div>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="stdf-report.html" class="active">Wafer Report</a></li>
+          <li><a href="stdf-analysis-report.html">Analysis Dashboard</a></li>
+          <li><a href="#" id="lot-summary-link">Lot Summary</a></li>
+          <li><a href="#" id="comparison-link">Comparison</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button class="btn-outline">Export</button>
+          <button class="btn-primary">Settings</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="report-container">
+      <header class="report-header">
+        <div class="header-left">
+          <div class="report-title">Wafer Analysis Report</div>
+          <div class="report-timestamp">
+            Generated: <span id="timestamp">2023-05-15 14:30:25</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="navigation-breadcrumb">
+            <a href="#" id="lot-link">LOT1234567</a> &gt;
+            <span id="current-wafer">WAFER23</span>
+          </div>
+          <div class="header-actions">
+            <button class="action-button" id="prev-wafer">
+              <i class="arrow left"></i> Previous Wafer
+            </button>
+            <button class="action-button" id="next-wafer">
+              Next Wafer <i class="arrow right"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <section class="summary-section">
+        <h2>Wafer Summary</h2>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span class="label">Lot ID:</span>
+            <span class="value" id="lot-id-value">LOT1234567</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Wafer ID:</span>
+            <span class="value" id="wafer-id-value">WAFER23</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Part Type:</span>
+            <span class="value">MCU-8765A</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Test Program:</span>
+            <span class="value">TP-V2.3.5</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Total Dies:</span>
+            <span class="value">1364</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Yield:</span>
+            <span class="value yield-value">87.9%</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="tab-navigation">
+        <button class="tab-button active" data-tab="wafer-tab">
+          Wafer Map
+        </button>
+        <button class="tab-button" data-tab="bin-tab">Bin Analysis</button>
+        <button class="tab-button" data-tab="test-tab">Test Analysis</button>
+        <button class="tab-button" data-tab="report-tab">Report</button>
+      </div>
+
+      <div class="tab-contents">
+        <!-- Wafer Map Tab -->
+        <div id="wafer-tab" class="tab-content">
+          <section class="wafer-section">
+            <div class="section-header">
+              <h3>Wafer Map</h3>
+              <div class="filter-controls">
+                <button class="filter-button active" data-filter="all">
+                  All Dies
+                </button>
+                <button class="filter-button" data-filter="pass">
+                  Pass Only
+                </button>
+                <button class="filter-button" data-filter="fail">
+                  Fail Only
+                </button>
+                <div class="display-options">
+                  <select id="map-display-type">
+                    <option value="standard">Standard View</option>
+                    <option value="heatmap">Bin Heatmap</option>
+                    <option value="parametric">Parametric</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="wafer-container">
+              <canvas id="wafer-map" width="600" height="600"></canvas>
+              <div class="wafer-legend">
+                <div class="legend-item">
+                  <span
+                    class="legend-color"
+                    style="background-color: #34c759"
+                  ></span>
+                  <span>Pass</span>
+                </div>
+                <div class="legend-item">
+                  <span
+                    class="legend-color"
+                    style="background-color: #ff3b30"
+                  ></span>
+                  <span>Fail</span>
+                </div>
+              </div>
+            </div>
+            <div class="wafer-instructions">
+              <p>Click on any die to see detailed test information</p>
+            </div>
+          </section>
+
+          <section class="metrics-section">
+            <h3>Key Metrics</h3>
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <div class="metric-value">87.9%</div>
+                <div class="metric-label">Overall Yield</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">92.3%</div>
+                <div class="metric-label">Center Yield</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">78.5%</div>
+                <div class="metric-label">Edge Yield</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">1240</div>
+                <div class="metric-label">Good Dies</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">124</div>
+                <div class="metric-label">Bad Dies</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-value">0.45%</div>
+                <div class="metric-label">Edge Fail %</div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Bin Analysis Tab -->
+        <div id="bin-tab" class="tab-content">
+          <section class="bin-analysis-section">
+            <h3>Bin Distribution</h3>
+            <div class="bin-chart-container">
+              <div class="bin-chart"></div>
+            </div>
+            <div class="bin-summary">
+              <h4>Bin Summary</h4>
+              <table id="bin-summary-table" class="data-table">
+                <thead>
+                  <tr>
+                    <th>Bin</th>
+                    <th>Description</th>
+                    <th>Count</th>
+                    <th>Percentage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Bin data will be populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section class="bin-trend-section">
+            <h3>Bin Trend Analysis</h3>
+            <div class="trend-controls">
+              <label>
+                Trend Period:
+                <select id="trend-period">
+                  <option value="wafer">This Wafer</option>
+                  <option value="lot">Current Lot</option>
+                  <option value="month">Last Month</option>
+                </select>
+              </label>
+              <button class="btn-outline" id="compare-bins">
+                Compare with Other Wafers
+              </button>
+            </div>
+            <div class="trend-chart-container">
+              <div class="placeholder-chart">
+                Bin trend data will be shown here
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Test Analysis Tab -->
+        <div id="test-tab" class="tab-content">
+          <section class="test-analysis-section">
+            <h3>Test Parameter Analysis</h3>
+            <div class="test-filter">
+              <label for="test-select">Select Test:</label>
+              <select id="test-select">
+                <option value="test1">Test 1 - Voltage Check</option>
+                <option value="test2">Test 2 - Current Measurement</option>
+                <option value="test3">Test 3 - Resistance Test</option>
+                <option value="test4">Test 4 - Frequency Check</option>
+                <option value="test5">Test 5 - Leakage Test</option>
+              </select>
+            </div>
+            <div class="test-distribution">
+              <h4>Parameter Distribution</h4>
+              <div class="chart-placeholder">
+                <div class="chart-message">
+                  Select a test parameter to view distribution chart
+                </div>
+              </div>
+            </div>
+            <div class="test-statistics">
+              <h4>Statistics</h4>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Statistic</th>
+                    <th>Value</th>
+                    <th>Unit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Mean</td>
+                    <td>2.543</td>
+                    <td>mV</td>
+                  </tr>
+                  <tr>
+                    <td>Median</td>
+                    <td>2.498</td>
+                    <td>mV</td>
+                  </tr>
+                  <tr>
+                    <td>Std Dev</td>
+                    <td>0.423</td>
+                    <td>mV</td>
+                  </tr>
+                  <tr>
+                    <td>Min</td>
+                    <td>1.245</td>
+                    <td>mV</td>
+                  </tr>
+                  <tr>
+                    <td>Max</td>
+                    <td>4.856</td>
+                    <td>mV</td>
+                  </tr>
+                  <tr>
+                    <td>Cp</td>
+                    <td>1.35</td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <td>Cpk</td>
+                    <td>1.23</td>
+                    <td>-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section class="spatial-distribution-section">
+            <h4>Spatial Distribution</h4>
+            <div class="spatial-map-container">
+              <div class="placeholder-map">
+                Parameter spatial distribution map
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Report Tab -->
+        <div id="report-tab" class="tab-content">
+          <section class="report-section">
+            <h3>Report Summary</h3>
+            <div class="report-text">
+              <p>
+                Lot LOT1234567 containing wafer WAFER23 was tested on 2023-05-15
+                using test program TP-V2.3.5.
+              </p>
+              <p>
+                The overall yield is 87.9% with 1240 passing dies and 124
+                failing dies.
+              </p>
+              <p>
+                The primary failure mode is Bin 2 (Open) with 45 occurrences,
+                followed by Bin 3 (Short) with 32 occurrences.
+              </p>
+              <p>
+                Yield shows a radial pattern with higher yields in the center
+                region (92.3%) and lower yields near the edge (78.5%).
+              </p>
+              <p>
+                All parameters are within specification limits with adequate
+                process capability (Cpk > 1.2).
+              </p>
+            </div>
+            <div class="recommendations">
+              <h4>Recommendations</h4>
+              <ul>
+                <li>
+                  Investigate the edge yield pattern to determine if process
+                  optimization is required.
+                </li>
+                <li>
+                  Review Bin 2 failures for potential probe contact issues.
+                </li>
+                <li>
+                  Consider tightening the upper specification limit for Test 4
+                  to improve quality margins.
+                </li>
+              </ul>
+            </div>
+            <div class="report-actions">
+              <button class="btn-primary" id="export-pdf">Export as PDF</button>
+              <button class="btn-outline" id="export-csv">
+                Export Data as CSV
+              </button>
+              <button class="btn-outline" id="share-report">
+                Share Report
+              </button>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <footer class="report-footer">
+        <div class="footer-content">
+          <div>STDF Analysis Report</div>
+          <div>© 2023 Semiconductor Test Analytics</div>
+        </div>
+        <div class="footer-nav">
+          <a href="index.html" id="footer-home">Home</a> |
+          <a href="#" id="footer-about">About</a> |
+          <a href="#" id="footer-help">Help</a> |
+          <a href="#" id="footer-contact">Contact</a>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Die Information Modal -->
+    <div id="die-info-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Die Information</h3>
+          <button class="close-button">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="die-summary">
+            <div class="die-summary-item">
+              <span class="label">Coordinates:</span>
+              <span id="die-coordinates" class="value">X: 10, Y: 12</span>
+            </div>
+            <div class="die-summary-item">
+              <span class="label">Wafer ID:</span>
+              <span id="die-wafer-id" class="value">WAFER23</span>
+            </div>
+            <div class="die-summary-item">
+              <span class="label">Lot ID:</span>
+              <span id="die-lot-id" class="value">LOT1234567</span>
+            </div>
+            <div class="die-summary-item">
+              <span class="label">Status:</span>
+              <span id="die-status" class="die-status pass">Pass</span>
+            </div>
+            <div class="die-summary-item">
+              <span class="label">Bin Number:</span>
+              <span id="die-bin" class="value">1</span>
+            </div>
+          </div>
+
+          <div class="die-test-results">
+            <h4>Test Results</h4>
+            <table id="test-results-table" class="data-table">
+              <thead>
+                <tr>
+                  <th>Test #</th>
+                  <th>Test Name</th>
+                  <th>Result</th>
+                  <th>Value</th>
+                  <th>Lower Limit</th>
+                  <th>Upper Limit</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Test data will be populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-actions">
+            <button class="btn-outline" id="view-similar-dies">
+              View Similar Dies
+            </button>
+            <button class="btn-primary" id="flag-for-review">
+              Flag for Review
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wafer Selection Modal -->
+    <div id="wafer-select-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Select Wafer</h3>
+          <button class="close-button">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="search-box">
+            <input
+              type="text"
+              id="wafer-search"
+              placeholder="Search wafers..."
+            />
+          </div>
+          <div class="wafer-list">
+            <div class="wafer-item active">
+              <div class="wafer-id">WAFER23</div>
+              <div class="wafer-details">
+                <span class="wafer-yield">87.9%</span>
+                <span class="wafer-date">2023-05-15</span>
+              </div>
+            </div>
+            <div class="wafer-item">
+              <div class="wafer-id">WAFER24</div>
+              <div class="wafer-details">
+                <span class="wafer-yield">89.2%</span>
+                <span class="wafer-date">2023-05-15</span>
+              </div>
+            </div>
+            <div class="wafer-item">
+              <div class="wafer-id">WAFER25</div>
+              <div class="wafer-details">
+                <span class="wafer-yield">86.5%</span>
+                <span class="wafer-date">2023-05-16</span>
+              </div>
+            </div>
+            <div class="wafer-item">
+              <div class="wafer-id">WAFER26</div>
+              <div class="wafer-details">
+                <span class="wafer-yield">91.3%</span>
+                <span class="wafer-date">2023-05-16</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="stdf-report.js"></script>
+  </body>
+</html>

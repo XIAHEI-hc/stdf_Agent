@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent Framework Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="stdf-report.css" />
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar for file navigation -->
+      <div class="sidebar file-explorer">
+        <div class="sidebar-header">
+          <h3>文件区</h3>
+        </div>
+        <div class="nav-actions">
+          <button class="btn-outline">
+            <i class="fas fa-upload"></i> 上传
+          </button>
+          <button class="btn-primary"><i class="fas fa-cog"></i> 设置</button>
+        </div>
+        <div class="file-list">
+          <div class="file-item">
+            <i class="fas fa-file-excel"></i>
+            <span>sample.stdf</span>
+          </div>
+          <div class="file-item">
+            <i class="fas fa-file-excel"></i>
+            <span>converted.xlsm</span>
+          </div>
+          <div class="file-item">
+            <i class="fas fa-file-code"></i>
+            <span>analysis.html</span>
+          </div>
+          <div class="file-item">
+            <i class="fas fa-database"></i>
+            <span>data.db</span>
+          </div>
+          <div class="file-item">
+            <i class="fas fa-file-code"></i>
+            <span>wafer_report.html</span>
+          </div>
+          <div class="file-item">
+            <i class="fas fa-sitemap"></i>
+            <span>workflow1.json</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content area -->
+      <div class="main-content">
+        <div class="main-header">
+          <div class="app-title">Agent Framework Demo</div>
+          <div class="main-nav">
+            <a href="#workflow" class="nav-link active" data-tab="workflow"
+              >工作流编辑</a
+            >
+            <a href="#qa" class="nav-link" data-tab="qa">智能问答</a>
+            <a href="#agent" class="nav-link" data-tab="agent">自定义Agent</a>
+            <a href="stdf-report.html" class="nav-link">STDF报告</a>
+            <a href="workflow-editor.html" class="nav-link">高级工作流</a>
+          </div>
+        </div>
+
+        <!-- Workflow editor area -->
+        <div class="workflow-editor tab-container active" id="workflow">
+          <div class="workflow-header">
+            <h2><i class="fas fa-project-diagram"></i> 工作流编辑器</h2>
+            <div class="workflow-actions">
+              <button class="btn-outline">
+                <i class="fas fa-save"></i> 保存
+              </button>
+              <button class="btn-outline">
+                <i class="fas fa-plus"></i> 新建
+              </button>
+              <button class="btn-primary">
+                <i class="fas fa-play"></i> 运行
+              </button>
+            </div>
+          </div>
+          <div class="workflow-content">
+            <div class="canvas">
+              <!-- Example workflow node -->
+              <div
+                class="workflow-node input-node"
+                style="top: 80px; left: 100px"
+              >
+                <div class="node-header">
+                  <span>STDF文件输入</span>
+                  <div class="node-controls">
+                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-times"></i>
+                  </div>
+                </div>
+                <div class="node-body">
+                  <div class="node-param">
+                    <label>文件路径:</label>
+                    <input type="text" value="sample.stdf" />
+                  </div>
+                </div>
+                <div class="node-ports">
+                  <div class="output-port" data-port="output"></div>
+                </div>
+              </div>
+
+              <div
+                class="workflow-node process-node"
+                style="top: 80px; left: 350px"
+              >
+                <div class="node-header">
+                  <span>STDF转XLSM</span>
+                  <div class="node-controls">
+                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-times"></i>
+                  </div>
+                </div>
+                <div class="node-body">
+                  <div class="node-param">
+                    <label>输出格式:</label>
+                    <select>
+                      <option>XLSM</option>
+                      <option>CSV</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="node-ports">
+                  <div class="input-port" data-port="input"></div>
+                  <div class="output-port" data-port="output"></div>
+                </div>
+              </div>
+
+              <div
+                class="workflow-node output-node"
+                style="top: 80px; left: 600px"
+              >
+                <div class="node-header">
+                  <span>XLSM转HTML分析</span>
+                  <div class="node-controls">
+                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-times"></i>
+                  </div>
+                </div>
+                <div class="node-body">
+                  <div class="node-param">
+                    <label>输出文件名:</label>
+                    <input type="text" value="wafer_report.html" />
+                  </div>
+                </div>
+                <div class="node-ports">
+                  <div class="input-port" data-port="input"></div>
+                </div>
+              </div>
+
+              <!-- Connection lines between nodes -->
+              <svg class="connections">
+                <path
+                  d="M 170,95 C 220,95 280,95 330,95"
+                  class="connection-path"
+                ></path>
+                <path
+                  d="M 420,95 C 470,95 530,95 580,95"
+                  class="connection-path"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat container (loaded when tab clicked) -->
+        <div class="chat-container tab-container" id="qa" style="display: none">
+          <div class="chat-header">
+            <h2><i class="fas fa-comments"></i> 智能问答</h2>
+          </div>
+          <div class="chat-workflow-preview">
+            <div class="preview-header">
+              <h3>推荐工作流</h3>
+              <button class="btn-outline">应用</button>
+            </div>
+            <div class="preview-content">
+              <div class="workflow-preview-node">STDF输入</div>
+              <div class="workflow-preview-arrow">→</div>
+              <div class="workflow-preview-node">STDF转XLSM</div>
+              <div class="workflow-preview-arrow">→</div>
+              <div class="workflow-preview-node">缺陷分析</div>
+              <div class="workflow-preview-arrow">→</div>
+              <div class="workflow-preview-node">生成报告</div>
+            </div>
+          </div>
+          <div class="chat-history">
+            <div class="message">
+              <div class="agent-message">
+                您好！我是MCP智能助手。请问有什么可以帮助您？
+              </div>
+            </div>
+            <div class="message">
+              <div class="user-message">
+                我的桌面上有一个stdf文件，帮我分析一下。
+              </div>
+            </div>
+            <div class="message">
+              <div class="agent-message">
+                我可以帮您分析STDF文件。我建议使用如下工作流：<br />
+                1. 使用STDF到XLSM转换工具<br />
+                2. 使用缺陷模型检测工具分析数据<br />
+                3. 生成HTML分析报告<br /><br />
+
+                是否需要我为您创建并运行这个工作流？
+              </div>
+            </div>
+          </div>
+          <div class="chat-input">
+            <input type="text" placeholder="请输入您的问题..." />
+            <button><i class="fas fa-paper-plane"></i> 发送</button>
+          </div>
+        </div>
+
+        <!-- Agent container (loaded when tab clicked) -->
+        <div
+          class="agent-container tab-container"
+          id="agent"
+          style="display: none"
+        >
+          <div class="agent-header">
+            <h2><i class="fas fa-robot"></i> 自定义Agent</h2>
+            <button class="btn-primary" id="create-agent-btn">
+              <i class="fas fa-plus"></i> 创建新Agent
+            </button>
+          </div>
+
+          <div class="card-section">
+            <h3><i class="fas fa-robot"></i> 我的Agent</h3>
+          </div>
+
+          <div class="agent-card">
+            <div class="agent-header">
+              <div class="agent-header-left">
+                <div class="agent-icon">
+                  <i class="fas fa-microchip"></i>
+                </div>
+                <div class="agent-title">
+                  <div class="agent-name">半导体缺陷分析专家</div>
+                </div>
+              </div>
+              <div class="agent-status">活跃</div>
+            </div>
+            <div class="agent-body">
+              <div class="agent-description">
+                这个Agent专注于半导体缺陷分析，能够根据STDF数据识别常见缺陷模式并提供解决方案。
+              </div>
+            </div>
+            <div class="agent-actions">
+              <button><i class="fas fa-edit"></i> 编辑</button>
+              <button><i class="fas fa-copy"></i> 克隆</button>
+              <button class="primary">
+                <i class="fas fa-play"></i> 部署到工具市场
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tool market sidebar -->
+      <div class="sidebar tool-market">
+        <div class="sidebar-header">
+          <h3>MCP工具市场</h3>
+        </div>
+        <div class="tools-list">
+          <div class="tool-item" data-tool="stdf-to-csv">
+            <div class="tool-icon"><i class="fas fa-file-excel"></i></div>
+            <div class="tool-info">
+              <h4>STDF转CSV</h4>
+              <p>将STDF文件转换为CSV或XLSM格式</p>
+            </div>
+          </div>
+          <div class="tool-item" data-tool="xlsm-to-html">
+            <div class="tool-icon"><i class="fas fa-file-code"></i></div>
+            <div class="tool-info">
+              <h4>XLSM转HTML分析</h4>
+              <p>将XLSM文件转换为交互式HTML分析报告</p>
+            </div>
+          </div>
+          <div class="tool-item" data-tool="xlsm-to-db">
+            <div class="tool-icon"><i class="fas fa-database"></i></div>
+            <div class="tool-info">
+              <h4>XLSM转数据库</h4>
+              <p>将XLSM文件转换为.db数据库格式</p>
+            </div>
+          </div>
+          <div class="tool-item" data-tool="defect-model-1">
+            <div class="tool-icon"><i class="fas fa-bug"></i></div>
+            <div class="tool-info">
+              <h4>缺陷模型检测1</h4>
+              <p>使用算法1检测数据中的缺陷模型</p>
+            </div>
+          </div>
+          <div class="tool-item" data-tool="defect-model-2">
+            <div class="tool-icon"><i class="fas fa-bug"></i></div>
+            <div class="tool-info">
+              <h4>缺陷模型检测2</h4>
+              <p>使用算法2检测数据中的缺陷模型</p>
+            </div>
+          </div>
+          <div class="tool-item" data-tool="defect-model-3">
+            <div class="tool-icon"><i class="fas fa-bug"></i></div>
+            <div class="tool-info">
+              <h4>缺陷模型检测3</h4>
+              <p>使用算法3检测数据中的缺陷模型</p>
+            </div>
+          </div>
+          <div class="tool-item" data-tool="custom-model">
+            <div class="tool-icon"><i class="fas fa-robot"></i></div>
+            <div class="tool-info">
+              <h4>自定义大模型</h4>
+              <p>根据数据生成分析报告的定制大模型</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for creating a new agent (hidden by default) -->
+    <div class="modal" id="agent-modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>创建新的Agent</h3>
+          <button class="close-modal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="agent-name">Agent名称</label>
+            <input type="text" id="agent-name" placeholder="输入Agent名称" />
+          </div>
+          <div class="form-group">
+            <label for="agent-icon">Agent图标</label>
+            <select id="agent-icon">
+              <option value="fa-microchip">微芯片</option>
+              <option value="fa-chart-line">图表</option>
+              <option value="fa-bug">缺陷</option>
+              <option value="fa-robot">机器人</option>
+              <option value="fa-cogs">齿轮</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="agent-description">Agent描述</label>
+            <textarea
+              id="agent-description"
+              placeholder="描述这个Agent的用途和能力"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label>集成工具</label>
+            <div class="tool-checkboxes">
+              <div class="tool-checkbox">
+                <input type="checkbox" id="tool1" />
+                <label for="tool1">STDF转CSV</label>
+              </div>
+              <div class="tool-checkbox">
+                <input type="checkbox" id="tool2" />
+                <label for="tool2">XLSM转HTML分析</label>
+              </div>
+              <div class="tool-checkbox">
+                <input type="checkbox" id="tool3" />
+                <label for="tool3">XLSM转数据库</label>
+              </div>
+              <div class="tool-checkbox">
+                <input type="checkbox" id="tool4" />
+                <label for="tool4">缺陷模型检测1</label>
+              </div>
+              <div class="tool-checkbox">
+                <input type="checkbox" id="tool5" />
+                <label for="tool5">自定义大模型</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="agent-prompt">Agent指令(Prompt)</label>
+            <textarea
+              id="agent-prompt"
+              placeholder="输入对AI大模型的具体提示和指令..."
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-outline">取消</button>
+          <button class="btn-primary">创建</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

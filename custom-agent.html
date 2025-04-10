@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>自定义Agent - STDF数据分析系统</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      .agent-container {
+        padding: 20px;
+        height: 100%;
+        overflow-y: auto;
+      }
+
+      .agent-card {
+        background-color: #2d2d2d;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+
+      .agent-header {
+        background-color: #0e639c;
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .agent-header-left {
+        display: flex;
+        align-items: center;
+      }
+
+      .agent-icon {
+        width: 40px;
+        height: 40px;
+        background-color: white;
+        border-radius: 50%;
+        margin-right: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .agent-icon i {
+        color: #0e639c;
+        font-size: 20px;
+      }
+
+      .agent-name {
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      .agent-status {
+        font-size: 12px;
+        background-color: #28a745;
+        padding: 4px 8px;
+        border-radius: 10px;
+      }
+
+      .agent-body {
+        padding: 15px;
+      }
+
+      .agent-description {
+        color: #d4d4d4;
+        margin-bottom: 15px;
+        font-size: 14px;
+      }
+
+      .agent-capability {
+        background-color: #3c3c3c;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        font-size: 13px;
+      }
+
+      .agent-capability h4 {
+        font-size: 14px;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+      }
+
+      .agent-capability h4 i {
+        margin-right: 8px;
+        color: #0e639c;
+      }
+
+      .agent-actions {
+        display: flex;
+        justify-content: flex-end;
+        padding: 10px 15px;
+        background-color: #252526;
+      }
+
+      .agent-actions button {
+        background-color: #2d2d2d;
+        color: #d4d4d4;
+        border: 1px solid #555;
+        padding: 8px 12px;
+        border-radius: 4px;
+        margin-left: 10px;
+        cursor: pointer;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+      }
+
+      .agent-actions button i {
+        margin-right: 5px;
+      }
+
+      .agent-actions button.primary {
+        background-color: #0e639c;
+        color: white;
+        border: none;
+      }
+
+      .create-agent {
+        background-color: #2d2d2d;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        padding: 20px;
+        border: 2px dashed #555;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .create-agent i {
+        font-size: 24px;
+        color: #0e639c;
+        margin-bottom: 10px;
+      }
+
+      .create-agent h3 {
+        margin-bottom: 10px;
+        font-weight: 500;
+      }
+
+      .create-agent p {
+        color: #a0a0a0;
+        font-size: 14px;
+      }
+
+      /* Form styles */
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #d4d4d4;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        background-color: #3c3c3c;
+        border: 1px solid #555;
+        color: #d4d4d4;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .form-group textarea {
+        height: 150px;
+        resize: vertical;
+      }
+
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .modal-content {
+        background-color: #252526;
+        border-radius: 6px;
+        width: 600px;
+        max-width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        padding: 15px;
+        background-color: #333;
+        color: white;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-header h3 {
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      .modal-footer {
+        padding: 15px;
+        display: flex;
+        justify-content: flex-end;
+        background-color: #333;
+      }
+
+      .modal-footer button {
+        margin-left: 10px;
+      }
+
+      .card-section {
+        margin-bottom: 20px;
+      }
+
+      .card-section h3 {
+        font-size: 16px;
+        margin-bottom: 15px;
+        color: #d4d4d4;
+        display: flex;
+        align-items: center;
+      }
+
+      .card-section h3 i {
+        margin-right: 8px;
+        color: #0e639c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- 左侧侧边栏 - 文件浏览器 -->
+      <div class="sidebar file-explorer">
+        <div class="sidebar-header">
+          <h3>文件资源管理器</h3>
+        </div>
+        <div class="nav-actions">
+          <button class="btn-outline">
+            <i class="ri-folder-add-line"></i>
+            新建文件夹
+          </button>
+          <button class="btn-outline">
+            <i class="ri-file-add-line"></i>
+            新建文件
+          </button>
+        </div>
+        <div class="file-list">
+          <div class="file-item">
+            <i class="ri-folder-line"></i>
+            <span>STDF数据</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-line"></i>
+            <span>wafer_001.stdf</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-line"></i>
+            <span>wafer_002.stdf</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-line"></i>
+            <span>wafer_003.stdf</span>
+          </div>
+          <div class="file-item">
+            <i class="ri-folder-line"></i>
+            <span>分析结果</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-excel-line"></i>
+            <span>分析报告.xlsm</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-chart-line"></i>
+            <span>缺陷分析.html</span>
+          </div>
+          <div class="file-item">
+            <i class="ri-folder-line"></i>
+            <span>Agent</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-robot-line"></i>
+            <span>良率分析专家.agent</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-robot-line"></i>
+            <span>缺陷检测专家.agent</span>
+          </div>
+          <div class="file-item file-child active">
+            <i class="ri-robot-line"></i>
+            <span>新Agent.agent</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主内容区 -->
+      <div class="main-content">
+        <!-- 顶部导航 -->
+        <header class="main-header">
+          <div class="app-title">STDF智能数据分析平台</div>
+          <nav class="main-nav">
+            <a href="workflow-editor.html" class="nav-link">
+              <i class="ri-flow-chart"></i>
+              工作流编辑器
+            </a>
+            <a href="smart-qa.html" class="nav-link">
+              <i class="ri-question-answer-line"></i>
+              智能问答
+            </a>
+            <a href="custom-agent.html" class="nav-link active">
+              <i class="ri-robot-line"></i>
+              自定义Agent
+            </a>
+          </nav>
+          <div class="user-menu">
+            <button class="btn-outline">
+              <i class="ri-user-line"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- 自定义Agent主体 -->
+        <div class="agent-editor-container">
+          <div class="agent-header">
+            <h2 class="agent-title">自定义Agent</h2>
+            <div class="agent-actions">
+              <button class="btn-outline">
+                <i class="ri-save-line"></i>
+                保存
+              </button>
+              <button class="btn-primary">
+                <i class="ri-play-line"></i>
+                部署
+              </button>
+            </div>
+          </div>
+
+          <div class="agent-content">
+            <div class="agent-config-panel">
+              <div class="config-section">
+                <div class="section-header">
+                  <div class="section-title">基础配置</div>
+                </div>
+                <div class="section-content">
+                  <div class="input-group">
+                    <label for="agent-name">Agent名称</label>
+                    <input
+                      type="text"
+                      id="agent-name"
+                      value="新Agent"
+                      class="form-input"
+                    />
+                  </div>
+                  <div class="input-group">
+                    <label for="agent-description">描述</label>
+                    <textarea
+                      id="agent-description"
+                      class="form-input"
+                      rows="3"
+                      placeholder="描述这个Agent的用途和功能..."
+                    ></textarea>
+                  </div>
+                  <div class="input-group">
+                    <label for="agent-model">基础模型</label>
+                    <select id="agent-model" class="form-input">
+                      <option value="gpt-4">GPT-4</option>
+                      <option value="llama3-70b">Llama 3 70B</option>
+                      <option value="gemini-pro">Gemini Pro</option>
+                      <option value="claude-3">Claude 3</option>
+                    </select>
+                  </div>
+                  <div class="input-group">
+                    <label for="agent-temperature">Temperature</label>
+                    <div class="range-container">
+                      <input
+                        type="range"
+                        id="agent-temperature"
+                        min="0"
+                        max="1"
+                        step="0.1"
+                        value="0.7"
+                        class="form-range"
+                      />
+                      <span class="range-value">0.7</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-section">
+                <div class="section-header">
+                  <div class="section-title">工具能力</div>
+                </div>
+                <div class="section-content">
+                  <div class="checkbox-group">
+                    <input type="checkbox" id="tool-stdf" checked />
+                    <label for="tool-stdf">STDF数据分析</label>
+                  </div>
+                  <div class="checkbox-group">
+                    <input type="checkbox" id="tool-excel" checked />
+                    <label for="tool-excel">Excel数据处理</label>
+                  </div>
+                  <div class="checkbox-group">
+                    <input type="checkbox" id="tool-viz" checked />
+                    <label for="tool-viz">数据可视化</label>
+                  </div>
+                  <div class="checkbox-group">
+                    <input type="checkbox" id="tool-db" />
+                    <label for="tool-db">数据库交互</label>
+                  </div>
+                  <div class="checkbox-group">
+                    <input type="checkbox" id="tool-pattern" />
+                    <label for="tool-pattern">缺陷模式识别</label>
+                  </div>
+                  <div class="checkbox-group">
+                    <input type="checkbox" id="tool-report" />
+                    <label for="tool-report">报告生成</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-section">
+                <div class="section-header">
+                  <div class="section-title">基础文档</div>
+                </div>
+                <div class="section-content">
+                  <div class="file-drop-area">
+                    <i class="ri-upload-cloud-line"></i>
+                    <p>
+                      拖放文件至此处或<span class="browse-text">浏览文件</span>
+                    </p>
+                  </div>
+                  <div class="uploaded-files">
+                    <div class="file-item">
+                      <i class="ri-file-pdf-line"></i>
+                      <span>STDF格式手册.pdf</span>
+                      <button class="remove-btn">
+                        <i class="ri-close-line"></i>
+                      </button>
+                    </div>
+                    <div class="file-item">
+                      <i class="ri-file-text-line"></i>
+                      <span>芯片测试指南.txt</span>
+                      <button class="remove-btn">
+                        <i class="ri-close-line"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="agent-prompt-panel">
+              <div class="prompt-header">
+                <h3>Agent系统提示</h3>
+                <div class="prompt-actions">
+                  <button class="btn-outline btn-sm">
+                    <i class="ri-refresh-line"></i>
+                    重置
+                  </button>
+                  <button class="btn-outline btn-sm">
+                    <i class="ri-text-wrap"></i>
+                    格式化
+                  </button>
+                </div>
+              </div>
+              <div class="prompt-editor">
+                <textarea class="form-input prompt-textarea">
+你是一个专业的半导体测试数据分析专家，擅长分析STDF（Standard Test Data Format）文件。你的职责是帮助工程师快速理解测试数据，发现潜在问题，并提供可行的改进建议。
+
+你可以处理以下任务：
+1. 分析晶圆和芯片的测试结果，计算良率和其他关键指标
+2. 识别测试失败的模式和分布
+3. 比较不同批次的测试数据，发现趋势和异常
+4. 生成数据可视化，包括晶圆图、直方图和帕累托图等
+5. 针对发现的问题提供专业的工程解决方案
+
+在分析数据时，你应该：
+- 优先关注影响良率的主要因素
+- 考虑测试参数之间的相关性
+- 识别可能的制程问题
+- 提供清晰、准确的分析结论
+- 使用客观的数据支持你的观点
+
+当用户上传STDF文件时，你应该：
+1. 提取文件中的基本信息，如测试时间、晶圆ID、测试项目等
+2. 计算并展示关键性能指标
+3. 识别并突出显示异常数据点
+4. 提供初步的分析结论
+5. 询问用户是否需要更深入的分析
+
+你的回答应当专业、简洁，并且基于数据事实。如有必要，可以使用技术术语，但也要确保非专业人员能够理解你的解释。</textarea
+                >
+              </div>
+              <div class="prompt-footer">
+                <span class="token-count">当前字数: 527</span>
+                <button class="btn-primary">
+                  <i class="ri-check-line"></i>
+                  应用
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="agent-test-area">
+            <div class="test-header">
+              <h3>Agent测试</h3>
+              <button class="btn-outline btn-sm">
+                <i class="ri-history-line"></i>
+                历史记录
+              </button>
+            </div>
+            <div class="test-conversation">
+              <div class="conversation-placeholder">
+                <i class="ri-robot-line"></i>
+                <p>部署后可以在此测试Agent响应</p>
+              </div>
+            </div>
+            <div class="test-input-area">
+              <textarea
+                class="form-input test-input"
+                placeholder="输入测试消息..."
+                disabled
+              ></textarea>
+              <button class="btn-primary" disabled>
+                <i class="ri-send-plane-fill"></i>
+                发送
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧相关工具面板 -->
+      <div class="sidebar tool-market">
+        <div class="sidebar-header">
+          <h3>Agent模板库</h3>
+        </div>
+        <div class="tool-list">
+          <div class="agent-template">
+            <div class="template-header">
+              <i class="ri-robot-line"></i>
+              <span>良率分析专家</span>
+            </div>
+            <p class="template-description">
+              专注于分析测试良率、识别关键失效模式和提供改进建议的Agent。
+            </p>
+            <button class="btn-outline btn-sm template-action">应用模板</button>
+          </div>
+
+          <div class="agent-template">
+            <div class="template-header">
+              <i class="ri-robot-line"></i>
+              <span>缺陷模式识别</span>
+            </div>
+            <p class="template-description">
+              专门识别和分类芯片缺陷模式，关联到可能的制程或设计问题。
+            </p>
+            <button class="btn-outline btn-sm template-action">应用模板</button>
+          </div>
+
+          <div class="agent-template">
+            <div class="template-header">
+              <i class="ri-robot-line"></i>
+              <span>历史数据比对</span>
+            </div>
+            <p class="template-description">
+              对比分析多个批次的测试数据，识别趋势变化和异常情况。
+            </p>
+            <button class="btn-outline btn-sm template-action">应用模板</button>
+          </div>
+
+          <div class="agent-template">
+            <div class="template-header">
+              <i class="ri-robot-line"></i>
+              <span>报告生成器</span>
+            </div>
+            <p class="template-description">
+              自动生成标准化的测试报告，包含关键指标、图表和建议。
+            </p>
+            <button class="btn-outline btn-sm template-action">应用模板</button>
+          </div>
+
+          <div class="agent-template">
+            <div class="template-header">
+              <i class="ri-robot-line"></i>
+              <span>参数优化专家</span>
+            </div>
+            <p class="template-description">
+              根据测试数据分析，提供测试参数和制程参数的优化建议。
+            </p>
+            <button class="btn-outline btn-sm template-action">应用模板</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for creating a new agent (hidden by default) -->
+    <div class="modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>创建新的Agent</h3>
+          <button><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="agent-name">Agent名称</label>
+            <input type="text" id="agent-name" placeholder="输入Agent名称" />
+          </div>
+          <div class="form-group">
+            <label for="agent-icon">Agent图标</label>
+            <select id="agent-icon">
+              <option value="fa-microchip">微芯片</option>
+              <option value="fa-chart-line">图表</option>
+              <option value="fa-bug">缺陷</option>
+              <option value="fa-robot">机器人</option>
+              <option value="fa-cogs">齿轮</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="agent-description">Agent描述</label>
+            <textarea
+              id="agent-description"
+              placeholder="描述这个Agent的用途和能力"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label>集成工具</label>
+            <div
+              style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 10px;
+              "
+            >
+              <div style="display: flex; align-items: center">
+                <input type="checkbox" id="tool1" />
+                <label for="tool1" style="margin-left: 5px; margin-bottom: 0"
+                  >STDF转CSV</label
+                >
+              </div>
+              <div style="display: flex; align-items: center">
+                <input type="checkbox" id="tool2" />
+                <label for="tool2" style="margin-left: 5px; margin-bottom: 0"
+                  >XLSM转HTML分析</label
+                >
+              </div>
+              <div style="display: flex; align-items: center">
+                <input type="checkbox" id="tool3" />
+                <label for="tool3" style="margin-left: 5px; margin-bottom: 0"
+                  >XLSM转数据库</label
+                >
+              </div>
+              <div style="display: flex; align-items: center">
+                <input type="checkbox" id="tool4" />
+                <label for="tool4" style="margin-left: 5px; margin-bottom: 0"
+                  >缺陷模型检测1</label
+                >
+              </div>
+              <div style="display: flex; align-items: center">
+                <input type="checkbox" id="tool5" />
+                <label for="tool5" style="margin-left: 5px; margin-bottom: 0"
+                  >自定义大模型</label
+                >
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="agent-prompt">Agent指令(Prompt)</label>
+            <textarea
+              id="agent-prompt"
+              placeholder="输入对AI大模型的具体提示和指令..."
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button>取消</button>
+          <button class="primary">创建</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 简单的交互功能示意
+      document.addEventListener("DOMContentLoaded", function () {
+        // 温度滑块值显示
+        const temperatureSlider = document.getElementById("agent-temperature");
+        const temperatureValue = document.querySelector(".range-value");
+
+        temperatureSlider.addEventListener("input", function () {
+          temperatureValue.textContent = this.value;
+        });
+
+        // 应用模板按钮
+        const templateButtons = document.querySelectorAll(".template-action");
+        templateButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const template = this.closest(".agent-template");
+            const templateName = template.querySelector(
+              ".template-header span"
+            ).textContent;
+            document.getElementById("agent-name").value = templateName;
+            alert(`已应用"${templateName}"模板`);
+          });
+        });
+
+        // 计算提示词字数
+        const promptTextarea = document.querySelector(".prompt-textarea");
+        const tokenCount = document.querySelector(".token-count");
+
+        function updateTokenCount() {
+          const text = promptTextarea.value;
+          const wordCount = text.length;
+          tokenCount.textContent = `当前字数: ${wordCount}`;
+        }
+
+        promptTextarea.addEventListener("input", updateTokenCount);
+
+        // 部署按钮
+        const deployButton = document.querySelector(
+          ".agent-actions .btn-primary"
+        );
+        deployButton.addEventListener("click", function () {
+          alert("Agent部署中...");
+          // 启用测试区域
+          document.querySelector(".test-input").disabled = false;
+          document.querySelector(
+            ".test-input-area .btn-primary"
+          ).disabled = false;
+          document.querySelector(".conversation-placeholder").style.display =
+            "none";
+
+          // 添加系统消息
+          const testConversation = document.querySelector(".test-conversation");
+          testConversation.innerHTML = `
+            <div class="message assistant">
+              <div class="message-content">
+                <p>你好！我是${
+                  document.getElementById("agent-name").value
+                }。我已准备好回答你的问题。</p>
+              </div>
+            </div>
+          `;
+        });
+      });
+    </script>
+  </body>
+</html>

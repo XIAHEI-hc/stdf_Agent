@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>智能问答 - STDF数据分析系统</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- 左侧侧边栏 - 文件浏览器 -->
+      <div class="sidebar file-explorer">
+        <div class="sidebar-header">
+          <h3>文件资源管理器</h3>
+        </div>
+        <div class="nav-actions">
+          <button class="btn-outline">
+            <i class="ri-folder-add-line"></i>
+            新建文件夹
+          </button>
+          <button class="btn-outline">
+            <i class="ri-file-add-line"></i>
+            新建文件
+          </button>
+        </div>
+        <div class="file-list">
+          <div class="file-item">
+            <i class="ri-folder-line"></i>
+            <span>STDF数据</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-line"></i>
+            <span>wafer_001.stdf</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-line"></i>
+            <span>wafer_002.stdf</span>
+          </div>
+          <div class="file-item file-child active">
+            <i class="ri-file-line"></i>
+            <span>wafer_003.stdf</span>
+          </div>
+          <div class="file-item">
+            <i class="ri-folder-line"></i>
+            <span>分析结果</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-excel-line"></i>
+            <span>分析报告.xlsm</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-file-chart-line"></i>
+            <span>缺陷分析.html</span>
+          </div>
+          <div class="file-item">
+            <i class="ri-folder-line"></i>
+            <span>工作流</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-flow-chart"></i>
+            <span>良率分析流程.flow</span>
+          </div>
+          <div class="file-item file-child">
+            <i class="ri-flow-chart"></i>
+            <span>缺陷检测流程.flow</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主内容区 -->
+      <div class="main-content">
+        <!-- 顶部导航 -->
+        <header class="main-header">
+          <div class="app-title">STDF智能数据分析平台</div>
+          <nav class="main-nav">
+            <a href="workflow-editor.html" class="nav-link">
+              <i class="ri-flow-chart"></i>
+              工作流编辑器
+            </a>
+            <a href="smart-qa.html" class="nav-link active">
+              <i class="ri-question-answer-line"></i>
+              智能问答
+            </a>
+            <a href="custom-agent.html" class="nav-link">
+              <i class="ri-robot-line"></i>
+              自定义Agent
+            </a>
+          </nav>
+          <div class="user-menu">
+            <button class="btn-outline">
+              <i class="ri-user-line"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- 智能问答主体 -->
+        <div class="qa-container">
+          <div class="chat-header">
+            <h2 class="chat-title">STDF数据智能问答</h2>
+            <p class="chat-subtitle">正在分析: wafer_003.stdf</p>
+          </div>
+          
+          <div class="chat-area">
+            <div class="messages-container">
+              <div class="message assistant">
+                <div class="message-content">
+                  <p>你好！我是STDF数据分析助手。我已经加载了wafer_003.stdf文件，你可以直接向我提问关于这个数据的任何问题。</p>
+                  <p>例如：</p>
+                  <ul>
+                    <li>这个晶圆的整体良率是多少？</li>
+                    <li>什么测试项目失败最多？</li>
+                    <li>晶圆上缺陷的分布情况如何？</li>
+                    <li>与历史数据相比，这个晶圆有什么异常吗？</li>
+                  </ul>
+                </div>
+                <div class="message-metadata">
+                  <span>STDF分析助手 · 今天 14:30</span>
+                </div>
+              </div>
+              
+              <div class="message user">
+                <div class="message-content">
+                  <p>这个晶圆的整体良率是多少？主要的缺陷类型是什么？</p>
+                </div>
+                <div class="message-metadata">
+                  <span>你 · 今天 14:31</span>
+                </div>
+              </div>
+              
+              <div class="message assistant">
+                <div class="message-content">
+                  <p>wafer_003.stdf的整体良率为87.2%。</p>
+                  <p>主要缺陷类型分布为：</p>
+                  <ul>
+                    <li>参数偏移 (43%): 主要是VT1测试项超出阈值</li>
+                    <li>开路故障 (31%): 集中在晶圆右上角区域</li>
+                    <li>短路故障 (18%): 主要出现在金属层互连处</li>
+                    <li>其他故障 (8%): 包括时序问题和功耗异常</li>
+                  </ul>
+                  <p>与上周生产的晶圆相比，开路故障率增加了约5个百分点，可能需要检查右上角区域的制程问题。</p>
+                </div>
+                <div class="message-metadata">
+                  <span>STDF分析助手 · 今天 14:31</span>
+                </div>
+              </div>
+              
+              <div class="message user">
+                <div class="message-content">
+                  <p>右上角区域的开路故障有什么特征？能否分析一下可能的原因？</p>
+                </div>
+                <div class="message-metadata">
+                  <span>你 · 今天 14:32</span>
+                </div>
+              </div>
+              
+              <div class="message assistant">
+                <div class="message-content">
+                  <p>右上角区域的开路故障特征分析：</p>
+                  <ol>
+                    <li><strong>空间分布特征</strong>：呈现放射状分布，从(x:42, y:78)为中心向外扩散</li>
+                    <li><strong>电气特性</strong>：电阻值异常偏高 (>5MΩ)，电容测试完全开路</li>
+                    <li><strong>测试项特征</strong>：主要失败于金属层连续性测试和引脚连接测试</li>
+                  </ol>
+                  <p>可能的原因分析：</p>
+                  <ol>
+                    <li><strong>光刻胶残留</strong>：从测试数据模式看，很可能是金属层蚀刻过程中存在光刻胶残留，导致金属线无法完全形成</li>
+                    <li><strong>蚀刻不均匀</strong>：右上角区域的蚀刻速率可能异常，数据显示该区域蚀刻深度与中心区域相差15%</li>
+                    <li><strong>掩模对准偏移</strong>：金属层与接触孔之间存在约0.8μm的偏移，超出了工艺容限</li>
+                  </ol>
+                  <p>建议措施：检查曝光机右上角区域的光强均匀性，验证蚀刻液流动是否均匀，并检查对准系统校准状态。</p>
+                </div>
+                <div class="message-metadata">
+                  <span>STDF分析助手 · 今天 14:33</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="input-area">
+              <div class="input-container">
+                <textarea class="message-input" placeholder="输入你想问的问题..."></textarea>
+                <button class="btn-primary send-button">
+                  <i class="ri-send-plane-fill"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧相关数据面板 -->
+      <div class="sidebar tool-market">
+        <div class="sidebar-header">
+          <h3>数据洞察</h3>
+        </div>
+        <div class="tool-list">
+          <div class="config-section">
+            <div class="section-header">
+              <div class="section-title">晶圆良率分布</div>
+            </div>
+            <div class="section-content">
+              <div style="width: 100%; height: 200px; background-color: var(--neutral-100); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md);">
+                <span style="color: var(--neutral-500);">晶圆良率图</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="config-section">
+            <div class="section-header">
+              <div class="section-title">关键指标</div>
+            </div>
+            <div class="section-content">
+              <div class="node-param">
+                <span class="param-name">良率:</span>
+                <span class="param-value">87.2%</span>
+              </div>
+              <div class="node-param">
+                <span class="param-name">测试芯片数:</span>
+                <span class="param-value">2,478</span>
+              </div>
+              <div class="node-param">
+                <span class="param-name">失效芯片数:</span>
+        <div class="main-header">
+          <div class="app-title">MCP Agent框架演示</div>
+          <div class="main-nav">
+            <a href="workflow-editor.html" class="nav-link"
+              ><i class="fas fa-project-diagram"></i> 工作流编辑器</a
+            >
+            <a href="smart-qa.html" class="nav-link active"
+              ><i class="fas fa-comment-dots"></i> 智能问答</a
+            >
+            <a href="custom-agents.html" class="nav-link"
+              ><i class="fas fa-robot"></i> 自定义Agent</a
+            >
+          </div>
+        </div>
+
+        <!-- 智能问答区域 -->
+        <div class="tab-container active">
+          <div class="chat-container">
+            <div class="chat-header">
+              <h2><i class="fas fa-comment-dots"></i> 智能问答</h2>
+              <div class="chat-context">
+                <div class="context-selector">
+                  <span>当前分析文件:</span>
+                  <select>
+                    <option>test_data.stdf</option>
+                    <option>analysis_result.csv</option>
+                    <option>晶圆测试数据集</option>
+                  </select>
+                  <button class="btn-outline">
+                    <i class="fas fa-file-upload"></i> 上传
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-messages">
+              <div class="message system">
+                <div class="message-content">
+                  <p>
+                    您好，我是MCP智能分析助手，可以帮您分析STDF文件和测试数据，请问有什么可以帮助您的?
+                  </p>
+                </div>
+              </div>
+
+              <div class="message user">
+                <div class="message-content">
+                  <p>请分析test_data.stdf文件，给出主要的测试结果摘要</p>
+                </div>
+              </div>
+
+              <div class="message agent">
+                <div class="message-avatar">
+                  <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                  <p>
+                    我已经分析了test_data.stdf文件，以下是主要的测试结果摘要：
+                  </p>
+                  <div class="result-card">
+                    <h4>测试概览</h4>
+                    <ul>
+                      <li>测试项目数: 128</li>
+                      <li>总测试芯片数: 624</li>
+                      <li>通过芯片数: 589</li>
+                      <li>失败芯片数: 35</li>
+                      <li>整体良率: 94.3%</li>
+                    </ul>
+                  </div>
+                  <div class="result-card">
+                    <h4>主要失败模式</h4>
+                    <table class="mini-table">
+                      <tr>
+                        <th>测试项</th>
+                        <th>失败数</th>
+                        <th>失败率</th>
+                      </tr>
+                      <tr>
+                        <td>VDD_CURR</td>
+                        <td>12</td>
+                        <td>1.9%</td>
+                      </tr>
+                      <tr>
+                        <td>RF_PERF</td>
+                        <td>8</td>
+                        <td>1.3%</td>
+                      </tr>
+                      <tr>
+                        <td>OSC_FREQ</td>
+                        <td>7</td>
+                        <td>1.1%</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <p>是否需要我对某个特定测试项目进行更详细的分析？</p>
+                </div>
+              </div>
+
+              <div class="message user">
+                <div class="message-content">
+                  <p>请展示晶圆Map，并标出失败的芯片位置</p>
+                </div>
+              </div>
+
+              <div class="message agent">
+                <div class="message-avatar">
+                  <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                  <p>以下是晶圆Map，我已经标记了失败的芯片位置：</p>
+                  <div class="wafer-map-container">
+                    <div class="wafer-map">
+                      <!-- 这里应该渲染实际的晶圆图 -->
+                      <div class="wafer-circle">
+                        <!-- 模拟晶圆上的点 -->
+                        <div class="die pass" style="top: 30%; left: 40%"></div>
+                        <div class="die pass" style="top: 35%; left: 45%"></div>
+                        <div class="die fail" style="top: 40%; left: 50%"></div>
+                        <div class="die pass" style="top: 45%; left: 55%"></div>
+                        <div class="die pass" style="top: 50%; left: 60%"></div>
+                        <div class="die fail" style="top: 55%; left: 55%"></div>
+                        <div class="die pass" style="top: 60%; left: 50%"></div>
+                        <div class="die pass" style="top: 55%; left: 45%"></div>
+                        <div class="die fail" style="top: 50%; left: 40%"></div>
+                        <!-- 更多的点... -->
+                      </div>
+                    </div>
+                    <div class="map-legend">
+                      <div class="legend-item">
+                        <span class="legend-color pass"></span>
+                        <span>通过</span>
+                      </div>
+                      <div class="legend-item">
+                        <span class="legend-color fail"></span>
+                        <span>失败</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    我注意到失败的芯片主要分布在晶圆的右上区域，可能表明在该区域存在系统性问题。您需要我进一步分析这些失败芯片的具体测试参数吗？
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-input">
+              <textarea
+                placeholder="请输入您的问题，如'分析VDD_CURR失败原因'或'比较批次A和批次B的良率区别'..."
+              ></textarea>
+              <div class="input-actions">
+                <button class="btn-outline">
+                  <i class="fas fa-paperclip"></i>
+                </button>
+                <button class="btn-primary">
+                  <i class="fas fa-paper-plane"></i> 发送
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧知识库 -->
+      <div class="sidebar knowledge-base">
+        <div class="sidebar-header">
+          <h3>知识库</h3>
+        </div>
+        <div class="knowledge-search">
+          <input type="text" placeholder="搜索文档和知识..." />
+          <button><i class="fas fa-search"></i></button>
+        </div>
+        <div class="knowledge-list">
+          <div class="knowledge-category">
+            <div class="category-header">
+              <i class="fas fa-book"></i>
+              <span>STDF数据分析</span>
+            </div>
+            <div class="category-items">
+              <div class="knowledge-item">
+                <i class="fas fa-file-alt"></i>
+                <span>STDF文件格式说明</span>
+              </div>
+              <div class="knowledge-item">
+                <i class="fas fa-file-alt"></i>
+                <span>常见测试参数解释</span>
+              </div>
+              <div class="knowledge-item">
+                <i class="fas fa-file-alt"></i>
+                <span>良率分析方法</span>
+              </div>
+            </div>
+          </div>
+          <div class="knowledge-category">
+            <div class="category-header">
+              <i class="fas fa-chart-line"></i>
+              <span>数据可视化</span>
+            </div>
+            <div class="category-items">
+              <div class="knowledge-item">
+                <i class="fas fa-file-alt"></i>
+                <span>晶圆Map解读指南</span>
+              </div>
+              <div class="knowledge-item">
+                <i class="fas fa-file-alt"></i>
+                <span>统计图表分析技巧</span>
+              </div>
+            </div>
+          </div>
+          <div class="knowledge-category">
+            <div class="category-header">
+              <i class="fas fa-microchip"></i>
+              <span>测试案例研究</span>
+            </div>
+            <div class="category-items">
+              <div class="knowledge-item">
+                <i class="fas fa-file-alt"></i>
+                <span>常见失效模式分析</span>
+              </div>
+              <div class="knowledge-item">
+                <i class="fas fa-file-alt"></i>
+                <span>参数漂移案例研究</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
